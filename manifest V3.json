@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+    "name": "Block Sponsor Comments",
+    "version": "1.0.0",
+    "description": "Browser extension to remove sponsors from descriptions and comments.",
+    "permissions": [
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "*://*.youtube.com/*"
+    ],
+    "content_scripts": [{
+        "matches": ["https://www.youtube.com/*"],
+        "js": ["blocker.js"]
+    }],
+    "web_accessible_resources": [{
+        "resources": [
+            "*.json"
+        ],
+        "matches": [
+            "*://*/*"
+        ]
+    }],
+    "icons": {
+        "16": "icons/16.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+    }
+}
