@@ -1,17 +1,16 @@
-var strings = []
-var selectors = []
+var strings = [] // Store strings to match
+var selectors = [] // Store DOM selectors
 
-function EmbeddedURL(str) {
+function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
 }
 
-async function LoadJSON() {
+async function LoadJSON() { // Fetch the embedded JSON files
     try {
-        const stringsResponse = await fetch(EmbeddedURL("strings.json"));
-        const selectorsResponse = await fetch(EmbeddedURL("selectors.json"));
-
-        const stringsData = await stringsResponse.json();
-        const selectorsData = await selectorsResponse.json();
+        const [stringsData, selectorsData] = await Promise.all([
+            fetch(EmbeddedURL("strings.json")).then(response => response.json()),
+            fetch(EmbeddedURL("selectors.json")).then(response => response.json())
+        ]);
 
         return {
             strings: stringsData,
@@ -23,14 +22,14 @@ async function LoadJSON() {
     }
 }
 
-LoadJSON().then(data => {
+LoadJSON().then(data => { // Save the loaded JSON data into the variables
     if (data) {
         strings.push(...data.strings);
         selectors.push(...data.selectors);
     }
 });
 
-function searchAndProcessStrings() {
+function SearchAndDestroySponsors() {
     selectors.forEach(selector => {
         const elements = document.querySelectorAll(selector.Selector);
         elements.forEach(element => {
@@ -44,27 +43,9 @@ function searchAndProcessStrings() {
     });
 }
 
+SearchAndDestroySponsors()
 
-
-searchAndProcessStrings()
-
-new MutationObserver(searchAndProcessStrings).observe(document.body, {
+new MutationObserver(SearchAndDestroySponsors).observe(document.body, {
     childList: true,
     subtree: true
 });
-// strings.forEach(str => {
-//     const elementsWithText = document.querySelectorAll(`:contains("${str}")`);
-
-//     elementsWithText.forEach(element => {
-//         // Check if the element contains an HTTP or HTTPS link
-//         const links = element.querySelectorAll("a[href^='http://'], a[href^='https://']");
-
-//         if (links.length > 0) {
-//             // Perform your action here, such as logging a message
-//             console.log(`Found string with ${str} and HTTP/HTTPS link.`);
-//             // You can also perform an action on the element, like changing its style
-//             element.style.backgroundColor = "yellow";
-
-//         }
-//     });
-// });
