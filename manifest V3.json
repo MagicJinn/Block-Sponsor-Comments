@@ -3,10 +3,6 @@
     "name": "Block Sponsor Comments",
     "version": "1.0.0",
     "description": "Browser extension to remove sponsors from descriptions and comments.",
-    "permissions": [
-        "activeTab",
-        "scripting"
-    ],
     "host_permissions": [
         "*://*.youtube.com/*"
     ],
