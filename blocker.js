@@ -1,8 +1,12 @@
-var strings = [] // Store strings to match
+var strings = new Set(); // Store strings to match
 var selectors = [] // Store DOM selectors
 
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
+}
+
+function Flatten(str) {
+    return str.toLowerCase().replace(/\s/g, '')
 }
 
 async function LoadJSON() { // Fetch the embedded JSON files
@@ -24,27 +28,37 @@ async function LoadJSON() { // Fetch the embedded JSON files
 
 LoadJSON().then(data => { // Save the loaded JSON data into the variables
     if (data) {
-        strings.push(...data.strings);
+        data.strings.forEach(str => {
+            strings.add(Flatten(str));
+        });
         selectors.push(...data.selectors);
     }
 });
 
 function SearchAndDestroySponsors() {
-    selectors.forEach(selector => {
+    let elementsToRemove = []
+    selectors.forEach(selector => { // Loop through each selector to find sponsors
         const elements = document.querySelectorAll(selector.Selector);
-        elements.forEach(element => {
-            const commentText = (element.querySelector("#content-text") || element).textContent.toLowerCase().replace(/\s/g, '');
-            strings.forEach(str => {
-                if (commentText.includes(str.toLowerCase().replace(/\s/g, ''))) {
-                    element.remove();
+        elements.forEach(element => { // Loop through the elements the selector found
+            const foundText = Flatten( // Check whether it's a comment or description
+                (element.querySelector("#content-text") || element).textContent
+            );
+            for (const str of strings) { // Loop through all the strings and search for them in foundText
+                if (foundText.includes(str /* str is flattened elsewhere */ )) {
+                    elementsToRemove.push(element)
+                    break; // Break out of the loop when the first string is matched
                 }
-            });
+            };
         });
     });
+
+    // Remove elements outside the loop to avoid modifying the DOM during iteration
+    elementsToRemove.forEach(element => element.remove());
 }
 
 SearchAndDestroySponsors()
 
+// Look for changes in the DOM
 new MutationObserver(SearchAndDestroySponsors).observe(document.body, {
     childList: true,
     subtree: true
