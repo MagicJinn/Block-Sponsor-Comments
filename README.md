@@ -4,7 +4,7 @@
 
 A browser extension that removes a preset list of video sponsors from youtube video descriptions and comments.
 
-Meant to be used in combination with Sponsorblock: http://sponsor.ajay.app
+Meant to be used in combination with [Sponsorblock](http://sponsor.ajay.app). 
 I fully endorse this extension being integrated/merged with any other application with or without credit (Looking at you, Sponsorblock ;P)
 
 [![Button Download Firefox]][Download Firefox]  
