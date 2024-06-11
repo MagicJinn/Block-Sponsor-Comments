@@ -1,6 +1,8 @@
 var strings = new Set(); // Store strings to match
 var selectors = [] // Store DOM selectors
 
+const checkAgainEvery = 2.5 // seconds
+
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
 }
@@ -59,7 +61,7 @@ function SearchAndDestroySponsors() {
 SearchAndDestroySponsors()
 
 // Look for changes in the DOM
-new MutationObserver(SearchAndDestroySponsors).observe(document.body, {
-    childList: true,
-    subtree: true
-});
+new MutationObserver(SearchAndDestroySponsors).observe(document.body, { childList: true, subtree: true });
+
+// Maybemaybe
+setInterval(SearchAndDestroySponsors, checkAgainEvery * 1000); // Check every x seconds
