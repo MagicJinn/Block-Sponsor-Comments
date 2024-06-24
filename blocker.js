@@ -1,8 +1,6 @@
 var strings = new Set(); // Store strings to match
 var selectors = [] // Store DOM selectors
 
-const checkAgainEvery = 2.5 // seconds
-
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
 }
@@ -42,13 +40,30 @@ function SearchAndDestroySponsors() {
     selectors.forEach(selector => { // Loop through each selector to find sponsors
         const elements = document.querySelectorAll(selector.Selector);
         elements.forEach(element => { // Loop through the elements the selector found
-            const foundText = Flatten( // Check whether it's a comment or description
-                (element.querySelector("#content-text") || element).textContent
-            );
+            const foundText = (element.querySelector("#content-text") || element).innerHTML;
+            const flattenedText = Flatten(foundText)
+
             for (const str of strings) { // Loop through all the strings and search for them in foundText
-                if (foundText.includes(str /* str is flattened elsewhere */ )) {
-                    elementsToRemove.push(element)
-                    break; // Break out of the loop when the first string is matched
+                if (flattenedText.includes(str /* str is flattened elsewhere */)) {
+                    if (selector.Type == "Comment") {
+                        elementsToRemove.push(element)
+                        break; // Break out of the loop when the first string is matched, since the comment is then deleted
+                    }
+                    else if (selector.Type == "Description") {
+                        const sentences = foundText.split(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s/g); // split lines with complex regex shi
+                        let newText = ""
+
+                        for (let i = 0; i < sentences.length; i++) {
+                            let sentence = sentences[i]
+                            let flattenedSentence = Flatten(sentence)
+                            if (!flattenedSentence.includes(str)) { // If the sentence does NOT include a sponsor, add it to the newText
+                                newText += sentence +
+                                    (Math.floor(Math.random() * 1000) === 0 ? ' 😘' : ''); // Easter egg, 😘
+                            }
+                        }
+
+                        (element.querySelector("#content-text") || element).innerHTML = newText;
+                    }
                 }
             };
         });
@@ -58,10 +73,8 @@ function SearchAndDestroySponsors() {
     elementsToRemove.forEach(element => element.remove());
 }
 
-SearchAndDestroySponsors()
+SearchAndDestroySponsors() // Run initially
 
 // Look for changes in the DOM
-new MutationObserver(SearchAndDestroySponsors).observe(document.body, { childList: true, subtree: true });
-
-// Maybemaybe
-setInterval(SearchAndDestroySponsors, checkAgainEvery * 1000); // Check every x seconds
+new MutationObserver(SearchAndDestroySponsors)
+    .observe(document.body, { childList: true, subtree: true });
