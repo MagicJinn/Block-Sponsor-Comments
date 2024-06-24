@@ -1,7 +1,9 @@
 [{
+    "Type": "Comment",
     "Description": "HTML element containing a single comment.",
     "Selector": "ytd-comment-thread-renderer.style-scope"
 }, {
-    "Description": "Single lines in the youtube description.",
-    "Selector": "span.yt-core-attributed-string--link-inherit-color"
+    "Type": "Description",
+    "Description": "The complete HTML element containing the description",
+    "Selector": "span.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap[role]:not([role='text']), span.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap:not([role])"
 }]
