@@ -25,6 +25,6 @@ Microsoft Edge support has been ended, and the extension has been delisted. This
 
 [Button Download Edge]: https://img.shields.io/badge/Edge-0078D7?style=for-the-badge&logoColor=white&logo=MicrosoftEdge&color=grey
 
-[Download Firefox]: http://addons.mozilla.org/en-GB/firefox/addon/youtube-mrbeastify/
-[Download Chrome]: http://chrome.google.com/webstore/detail/youtube-mrbeastify/dbmaeobgdodeimjdjnkipbfhgeldnmeb
+[Download Firefox]: https://addons.mozilla.org/en-US/firefox/addon/block-sponsor-comments/
+[Download Chrome]: https://chromewebstore.google.com/detail/block-sponsor-comments/ajfpidfnjbpldhaokhiclamancibkamm
 [Download Edge]: #microsoftedge
