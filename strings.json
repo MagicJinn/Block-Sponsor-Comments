@@ -1,8 +1,10 @@
 [
+    "#sponsored",
     "Sponsored:",
     "Sponsored by",
     "sponsoring this video",
     "sponsoring today's video",
+    "The sponsor is",
     "with code",
     "use code",
     "use the code",
@@ -14,7 +16,6 @@
     "?utm_source=Influencers",
     "day free trial",
     "months free",
-    "The sponsor is",
     "% of",
     "% off",
 
@@ -125,5 +126,6 @@
     "influencerlink.org",
     "Starforge",
     "Hubspot",
-    "Trade Coffee"
+    "Trade Coffee",
+    "Lectric"
 ]
