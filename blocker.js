@@ -1,11 +1,14 @@
 var strings = new Set(); // Store strings to match
 var selectors = [] // Store DOM selectors
 
+var blockSelfPromotion = false
+
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
 }
 
 function Flatten(str) {
+    if (str == undefined) return ""
     return str.toLowerCase().replace(/\s/g, '')
 }
 
@@ -16,8 +19,14 @@ async function LoadJSON() { // Fetch the embedded JSON files
             fetch(EmbeddedURL("selectors.json")).then(response => response.json())
         ]);
 
+        const returnStringsData = [
+            ...stringsData.Sponsors,
+            // Add self promotion strings if setting enabled
+            ...(blockSelfPromotion ? stringsData.SelfPromotion : [])
+        ];
+
         return {
-            strings: stringsData,
+            strings: returnStringsData,
             selectors: selectorsData,
         };
     } catch (error) {
@@ -26,52 +35,72 @@ async function LoadJSON() { // Fetch the embedded JSON files
     }
 }
 
-LoadJSON().then(data => { // Save the loaded JSON data into the variables
+LoadJSON().then(data => {
     if (data) {
-        data.strings.forEach(str => {
-            strings.add(Flatten(str));
-        });
+        data.strings.forEach(str => strings.add(Flatten(str)));
         selectors.push(...data.selectors);
     }
 });
 
+
 function SearchAndDestroySponsors() {
-    let elementsToRemove = []
-    selectors.forEach(selector => { // Loop through each selector to find sponsors
+    let elementsToRemove = [];
+
+    selectors.forEach(selector => {
         const elements = document.querySelectorAll(selector.Selector);
-        elements.forEach(element => { // Loop through the elements the selector found
-            const foundText = (element.querySelector("#content-text") || element).innerHTML;
-            const flattenedText = Flatten(foundText)
 
-            for (const str of strings) { // Loop through all the strings and search for them in foundText
-                if (flattenedText.includes(str /* str is flattened elsewhere */)) {
-                    if (selector.Type == "Comment") {
-                        elementsToRemove.push(element)
-                        break; // Break out of the loop when the first string is matched, since the comment is then deleted
-                    }
-                    else if (selector.Type == "Description") {
-                        const sentences = foundText.split(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s/g); // split lines with complex regex shi
-                        let newText = ""
+        elements.forEach(element => {
+            const contentElement = element.querySelector("#content-text") || element;
+            const foundText = contentElement.innerHTML;
+            const flattenedText = Flatten(foundText);
 
-                        for (let i = 0; i < sentences.length; i++) {
-                            let sentence = sentences[i]
-                            let flattenedSentence = Flatten(sentence)
-                            if (!flattenedSentence.includes(str)) { // If the sentence does NOT include a sponsor, add it to the newText
-                                newText += sentence +
-                                    (Math.floor(Math.random() * 1000) === 0 ? ' 😘' : ''); // Easter egg, 😘
-                            }
-                        }
+            for (const str of strings) {
+                if (flattenedText.includes(str)) {
+                    if (selector.Type === "Comment") {
+                        elementsToRemove.push(element);
+                        break;
+                    } else if (selector.Type === "Description") {
+                        const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
 
-                        (element.querySelector("#content-text") || element).innerHTML = newText;
+                        let newText = sentences
+                            .filter(sentence => !Flatten(sentence).includes(str))
+                            .join("");
+
+                        // Preserve the original line breaks
+                        newText = newText.replace(/\n/g, '<br>');
+                        contentElement.innerHTML = newText;
                     }
                 }
-            };
+            }
         });
     });
 
-    // Remove elements outside the loop to avoid modifying the DOM during iteration
     elementsToRemove.forEach(element => element.remove());
 }
+
+function splitKeepDelimiter(input, regex) {
+    const parts = input.split(regex);
+    const result = [];
+
+    parts.forEach((part, index) => {
+        if (index > 0) {
+            const match = input.match(regex)[index - 1];
+            result.push(match);
+        }
+        result.push(part);
+    });
+
+    // Append the last delimiter if it exists
+    const lastMatch = input.match(regex)[input.match(regex).length - 1];
+    if (lastMatch) {
+        result.push(lastMatch);
+    }
+
+    return result;
+}
+
+
+
 
 SearchAndDestroySponsors() // Run initially
 

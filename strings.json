@@ -1,4 +1,5 @@
-[
+{
+    "Sponsors": [
     "#sponsored",
     "Sponsored:",
     "Sponsored by",
@@ -127,5 +128,11 @@
     "Starforge",
     "Hubspot",
     "Trade Coffee",
-    "Lectric"
+    "Lectric",
+    "displate"
+    ],
+    "SelfPromotion": [
+        "Patreon",
+        "lttstore"
 ]
+}
