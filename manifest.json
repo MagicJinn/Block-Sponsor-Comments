@@ -1,17 +1,22 @@
 {
     "manifest_version": 2,
     "name": "Block Sponsor Comments",
-    "version": "1.4.3",
-    "description": "Browser extension to remove sponsors from youtube descriptions and comments.",
+    "version": "1.5.0",
+    "description": "Browser extension to remove sponsors from YouTube descriptions and comments.",
     "permissions": [
-        "*://*.youtube.com/*"
+        "*://*.youtube.com/*",
+        "storage"
     ],
+    "browser_action": {
+        "default_popup": "settings.html"
+    },
     "content_scripts": [{
         "matches": ["https://www.youtube.com/*"],
         "js": ["blocker.js"],
         "run_at": "document_idle"
     }],
     "web_accessible_resources": [
+        "settings.html",
         "*.json"
     ],
     "icons": {

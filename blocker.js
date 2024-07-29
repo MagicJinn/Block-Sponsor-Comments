@@ -12,6 +12,12 @@ function Flatten(str) {
     return str.toLowerCase().replace(/\s/g, '')
 }
 
+function GetConfigSettings() {
+    chrome.storage.local.get(['blockSelfPromotion'], function (result) {
+        blockSelfPromotion = result.blockSelfPromotion || false;
+    });
+}
+
 async function LoadJSON() { // Fetch the embedded JSON files
     try {
         const [stringsData, selectorsData] = await Promise.all([
@@ -65,9 +71,6 @@ function SearchAndDestroySponsors() {
                         let newText = sentences
                             .filter(sentence => !Flatten(sentence).includes(str))
                             .join("");
-
-                        // Preserve the original line breaks
-                        newText = newText.replace(/\n/g, '<br>');
                         contentElement.innerHTML = newText;
                     }
                 }
@@ -99,10 +102,17 @@ function splitKeepDelimiter(input, regex) {
     return result;
 }
 
+// Collect debug info for issue reporting
+function savePageInfo() {
+    const pageURL = window.location.href; // Get the URL of the tab
+    const pageTitle = document.title; // Get the title of the tab
 
+    chrome.storage.local.set({ pageURL: pageURL, pageTitle: pageTitle });
+}
 
-
-SearchAndDestroySponsors() // Run initially
+// Call the function to save page info
+savePageInfo();
+GetConfigSettings()
 
 // Look for changes in the DOM
 new MutationObserver(SearchAndDestroySponsors)

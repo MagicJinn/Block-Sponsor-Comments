@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-size: 16px;
+            font-family: 'Source Sans Pro';
+            width: 300px;
+            background-color: #181818;
+            color: white
+        }
+
+        .kofi-icon {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #current-url,
+        #current-title {
+            background-color: #f0f0f0;
+            color: #666;
+            cursor: default;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div class="settings-menu">
+    <h1>Settings</h1>
+
+    <div class="option">
+        <label for="self-promotion">Block Self Promotion</label>
+        <input type="checkbox" id="self-promotion" name="self-promotion">
+    </div><br>
+
+    <button id="show-issue-form">Submit issue with current watchpage</button>
+    <div id="issue-form" style="display: none;">
+        <input type="text" id="current-title" style="width:100%" placeholder="Current video Title">
+        <br>
+        <input type="text" id="current-url" style="width:100%" placeholder="Current video URL">
+        <br>
+        <textarea id="extra-notes" placeholder="Additional notes..."></textarea>
+        <br>
+        <div style="display: flex; align-items: center;">
+            <button id="submit-issue">Submit to GitHub</button>
+            <div style="font-size: 12px; margin-left: 8px">(Requires a GitHub account)</div>
+        </div>
+    </div>
+
+    <a href="https://ko-fi.com/magicjinn" target="_blank" class="kofi-icon">
+        <img src="https://ko-fi.com/favicon.ico" width="24" height="24">
+    </a>
+    <script src="settings.js"></script>
+</div>
