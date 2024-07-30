@@ -6,7 +6,7 @@
     "permissions": [
         "*://*.youtube.com/*",
         "storage"
-    ],
+        ],
     "browser_action": {
         "default_popup": "settings.html"
     },
