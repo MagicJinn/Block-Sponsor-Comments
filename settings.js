@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     showIssueFormButton.addEventListener('click', () => {
         issueForm.style.display = issueForm.style.display === 'none' ? 'block' : 'none';
         GetPageContext((pageTitle, pageURL) => {
-            currentTitleInput.value = pageTitle.replace(" - YouTube", "")
-            currentUrlInput.value = pageURL.replace("www.", "")
+            currentTitleInput.value = pageTitle
+            currentUrlInput.value = pageURL
         })
     });
 
@@ -31,21 +31,30 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.storage.local.get(["pageURL", "pageTitle"], function (result) {
             const pageTitle = result.pageTitle || ''; // Default to empty string if not found
             const pageURL = result.pageURL || ''; // Default to empty string if not found
-            callback(pageTitle, pageURL);
+            callback(pageTitle.replace("www.", ""), pageURL.replace(" - YouTube", ""));
         });
     }
 
     // Event listener for the submit issue button
     submitIssueButton.addEventListener('click', function () {
-        GetPageContext((pageTitle, pageURL) => {
-            const notes = extraNotesTextarea.value;
+        const ISSUE_TITLE_PREFIX = 'New sponsor at: ';
+        const GITHUB_REPO_URL = 'https://github.com/MagicJinn/Block-Sponsor-Comments/issues/new';
+        const LABEL = 'new sponsor';
 
-            // Create the GitHub issue URL with query parameters
-            const issueUrl = `https://github.com/MagicJinn/Block-Sponsor-Comments/issues/new?title=New+sponsor+at:+${encodeURIComponent(pageTitle)}&body=${encodeURIComponent(`URL: ${pageURL}\n\nNotes:\n${notes}`)}`;
+        // Prepare the issue title and body
+        const issueTitle = `${ISSUE_TITLE_PREFIX}${currentTitleInput.value}`;
+        let issueBody = `URL: ${currentUrlInput.value}`;
+        const notes = extraNotesTextarea.value.trim();
 
-            // Open the new issue URL in a new tab
-            window.open(issueUrl, '_blank');
-        });
+        // Only add notes to the body if there are any
+        if (notes) {
+            issueBody += `\n\nNotes:\n${notes}`;
+        }
+
+        // Create the GitHub issue URL with query parameters, including the label
+        const issueUrl = `${GITHUB_REPO_URL}?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent(LABEL)}`;
+
+        // Open the new issue URL in a new tab
+        chrome.tabs.create({ url: issueUrl });
     });
-
 });
