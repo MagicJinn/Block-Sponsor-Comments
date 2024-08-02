@@ -95,9 +95,7 @@ function splitKeepDelimiter(input, regex) {
 
     // Append the last delimiter if it exists
     const lastMatch = input.match(regex)[input.match(regex).length - 1];
-    if (lastMatch) {
-        result.push(lastMatch);
-    }
+    if (lastMatch) result.push(lastMatch);
 
     return result;
 }
@@ -110,8 +108,9 @@ function savePageInfo() {
     chrome.storage.local.set({ pageURL: pageURL, pageTitle: pageTitle });
 }
 
-// Call the function to save page info
-savePageInfo();
+if (document.hasFocus()) savePageInfo(); // Call the function to save page info
+window.addEventListener('focus', savePageInfo); // Call SavePageInfo every time the tab gains focus
+
 GetConfigSettings()
 
 // Look for changes in the DOM
