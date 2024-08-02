@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Create the GitHub issue URL with query parameters, including the label
-        const issueUrl = `${GITHUB_REPO_URL}?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent(LABEL)}`;
+        const issueUrl = `${GITHUB_REPO_URL}?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
 
         // Open the new issue URL in a new tab
         chrome.tabs.create({ url: issueUrl });
