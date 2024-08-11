@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to get page context from chrome.storage.local
     function GetPageContext(callback) {
         chrome.storage.local.get(["pageURL", "pageTitle"], function (result) {
-            const pageTitle = result.pageTitle || ''; // Default to empty string if not found
-            const pageURL = result.pageURL || ''; // Default to empty string if not found
-            callback(pageTitle.replace("www.", ""), pageURL.replace(" - YouTube", ""));
+            const pageTitle = result.pageTitle.replace(" - YouTube", "") || ''; // Default to empty string if not found
+            const pageURL = result.pageURL.replace("www.", "") || ''; // Default to empty string if not found
+            callback(pageTitle, pageURL);
         });
     }
 
     // Event listener for the submit issue button
     submitIssueButton.addEventListener('click', function () {
-        const ISSUE_TITLE_PREFIX = 'New sponsor at: ';
+        const ISSUE_TITLE_PREFIX = 'New sponsor: ';
         const GITHUB_REPO_URL = 'https://github.com/MagicJinn/Block-Sponsor-Comments/issues/new';
         const LABEL = 'new sponsor';
 
