@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Block Sponsor Comments",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": "Browser extension to remove sponsors from YouTube descriptions and comments.",
     "permissions": [
         "*://*.youtube.com/*",
