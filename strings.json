@@ -21,6 +21,8 @@
         "months free",
         "% of",
         "% off",
+        "get a 10% discount",
+        "?ref=",
 
 
         "app.temu.com",
@@ -55,6 +57,7 @@
         "your browser is holding you back",
         "Break up with basic browsers",
         "Get a browser that’s literally better at everything",
+        "gx.me",
 
         "ninja.kiwi/",
         "Craft your perfect defense from a combination of powerful Monkey Towers and awesome Heroes, then pop every last invading Bloon!",
@@ -83,28 +86,38 @@
 
         "Kollab",
         "hegshot.com/login",
-
+        
         "Acronis Cyber Protect",
         "acronis.com",
-
+        
         "apexgamingpcs",
         "Apex Gaming PC",
-
+        
         "piavpn",
         "private internet access",
         "privateinternetaccess",
-
+        
         "Buy cheap games from GOG.com",
         "af.gog.com/partner",
-
+        
         "Game Discounts:",
         "instant-gaming.com/igr",
-
+        
         "Suits by Indochino!",
         "/indochino",
-
+        
         "Download Monster Hunter Now",
         "monsterhunternow.onelink.me",
+        
+        "Convex",
+        "cvx.so",
+        
+        "Scentbird",
+        "sbird.co",
+        
+        "NordVPN",
+        "with Nord’s 30-day money-back guarantee!",
+
 
         "Rocket Money",
         "Urcdkeys.Com",
@@ -121,7 +134,6 @@
         "Audible",
         "Skillshare",
         "Squarespace",
-        "NordVPN",
         "Raycon",
         "HelloFresh",
         "Manscaped",
@@ -168,13 +180,20 @@
         "cs.money",
         "hellcase",
         "skinport",
+        "geni.usa",
+        "mnscpd.com",
+        "g-portal"
     ],
     "SelfPromotion": [
         "Patreon",
+        
+        "Sort of newish book of depressing poems",
+        "tinyurl.com/27fdfh63",
+
         "lttstore",
         "ayylienclothing",
         "legaleagle.link/eagleteam",
         "mrbeast.store",
         "viewstats"
-        ]
+    ]
 }
