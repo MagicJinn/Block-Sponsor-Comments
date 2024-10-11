@@ -11,6 +11,7 @@
         "use code",
         "use the code",
         "using my code",
+        "use my discount code",
         "with my link",
         "through my link",
         "Click the link",
@@ -20,11 +21,13 @@
         "day trial",
         "day free trial",
         "months free",
+        "month free trial",
         "% of",
         "% off",
         "get a 10% discount",
         "?ref=",
-
+        "activation code at",
+        "No credit card is required.",
 
         "app.temu.com",
         "shop like a billionaire",
@@ -40,7 +43,7 @@
         "Brilliant.org",
         "/brilliant",
         "Try Brilliant",
-        "To try everything Brilliant has to offer for free for a full 30 days, visit",
+        "To try everything Brilliant has to offer",
 
         "Tax Network USA",
         "TNUSA",
@@ -119,6 +122,7 @@
         
         "NordVPN",
         "with Nord’s 30-day money-back guarantee!",
+        "NordPass",
 
         "hoyo.link",
         "Download HoYoverse Action RPG Honkai Impact 3rd here",
@@ -127,10 +131,18 @@
         "@odoo",
         "odoo.com/r",
 
+        "Comparez les meilleures offres d'assurance auto, avec notre comparateur gratuit",
+        "lecomparateurassurance",
+
+        "Liquid I.V.",
+        "#liquidIVpartner",
+        "bit.ly/3YeoPx2",
+
+        "Skillshare",
+        "skl.sh",
+
         "Starforge",
         "The best PCs in the universe! | Get yours today",
-
-
         "Rocket Money",
         "Urcdkeys.Com",
         "joindeleteme",
@@ -144,7 +156,6 @@
         "shopify",
         "joinhoney",
         "Audible",
-        "Skillshare",
         "Squarespace",
         "Raycon",
         "HelloFresh",
@@ -202,7 +213,12 @@
         "cc.themeatofit.com",
         "dudewipes",
         "groundnews.com/johnnyharris",
-        "bitdefender.com/en-us/trusted/?cid=inf|c|YTTJ|24Q3"
+        "bitdefender.com/en-us/trusted/?cid=inf|c|YTTJ|24Q3",
+        "fuelyourbody",
+        "Trade Republic",
+        "GoldRepublic",
+        "Saily.com",
+        "gettheloop"
     ],
     "SelfPromotion": [
         "Patreon",
@@ -214,6 +230,7 @@
         "ayylienclothing",
         "legaleagle.link/eagleteam",
         "mrbeast.store",
-        "viewstats"
+        "viewstats",
+        "www.dbrand.com/teardown"
     ]
 }
