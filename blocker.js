@@ -2,6 +2,8 @@ var strings = new Set(); // Store strings to match
 var selectors = [] // Store DOM selectors
 
 var blockSelfPromotion = false
+var debugMode = false;
+var sponsorString = '';
 
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
@@ -13,8 +15,10 @@ function Flatten(str) {
 }
 
 function GetConfigSettings() {
-    chrome.storage.local.get(['blockSelfPromotion'], function (result) {
+    chrome.storage.local.get(['blockSelfPromotion', 'debugMode', 'sponsorString'], function (result) {
         blockSelfPromotion = result.blockSelfPromotion || false;
+        debugMode = result.debugMode || false;
+        sponsorString = result.sponsorString || '';
     });
 }
 
@@ -60,18 +64,31 @@ function SearchAndDestroySponsors() {
             const foundText = contentElement.innerHTML;
             const flattenedText = Flatten(foundText);
 
-            for (const str of strings) {
-                if (flattenedText.includes(str)) {
-                    if (selector.Type === "Comment") {
-                        elementsToRemove.push(element);
-                        break;
-                    } else if (selector.Type === "Description") {
-                        const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
+            if (debugMode) { // Do not remove sponsors when in debug mode, for testing
+                if (flattenedText.includes(sponsorString)) {
 
-                        let newText = sentences
-                            .filter(sentence => !Flatten(sentence).includes(str))
-                            .join("");
-                        contentElement.innerHTML = newText;
+                    if (selector.Type = "Comment") {
+                        contentElement.style.color = 'red';
+                    } else if (selector.Type === "Description") {
+                        // Does not work for unknown reasons
+                        // const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
+                        // let newText = sentences.map(sentence => Flatten(sentence).includes(str) ? `<div style="color: red;">${sentence}</div>` : sentence).join("");
+                        // contentElement.innerHTML = newText;
+                    }
+                }
+            } else {
+                for (const str of strings) { // Loop through each string
+                    if (flattenedText.includes(str)) { // If a match is found
+                        if (selector.Type === "Comment") {
+                            elementsToRemove.push(element); // Simply remove element
+                            break; // Break since the element will be removed anyway
+                        } else if (selector.Type === "Description") {
+                            const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
+                            let newText = sentences
+                                .filter(sentence => !Flatten(sentence).includes(str)) // Filter for strings that do not contain the sponsor
+                                .join("");
+                            contentElement.innerHTML = newText;
+                        }
                     }
                 }
             }
@@ -81,7 +98,7 @@ function SearchAndDestroySponsors() {
     elementsToRemove.forEach(element => element.remove());
 }
 
-function splitKeepDelimiter(input, regex) {
+function splitKeepDelimiter(input, regex) { // Function to split text while keeping the character"/word at which it is split
     const parts = input.split(regex);
     const result = [];
 
@@ -105,7 +122,9 @@ function savePageInfo() {
     const pageURL = window.location.href; // Get the URL of the tab
     const pageTitle = document.title; // Get the title of the tab
 
-    chrome.storage.local.set({ pageURL: pageURL, pageTitle: pageTitle });
+    if (pageURL.includes("watch?") && pageURL.includes("youtube")) {
+        chrome.storage.local.set({ pageURL: pageURL, pageTitle: pageTitle });
+    }
 }
 
 if (document.hasFocus()) savePageInfo(); // Call the function to save page info

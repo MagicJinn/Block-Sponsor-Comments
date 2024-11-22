@@ -6,16 +6,53 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentTitleInput = document.getElementById('current-title');
     const currentUrlInput = document.getElementById('current-url');
     const extraNotesTextarea = document.getElementById('extra-notes');
+    const debugModeCheckbox = document.getElementById('debug-mode');
+    const sponsorStringInput = document.getElementById('sponsor-string');
+    const sponsorStringContainer = document.getElementById('sponsor-string-container');
 
-    // Load saved setting
-    chrome.storage.local.get(['blockSelfPromotion'], function (result) {
+    // Load saved settings
+    chrome.storage.local.get(['blockSelfPromotion', 'debugMode', 'sponsorString'], function (result) {
         selfPromotionCheckbox.checked = result.blockSelfPromotion || false;
+        debugModeCheckbox.checked = result.debugMode || false;
+
+        // Initialize sponsorString safely
+        const savedSponsorString = result.sponsorString || ''; // Default to empty string if undefined
+
+        // Show or hide the sponsor string input based on debug mode
+        if (result.debugMode) {
+            sponsorStringInput.value = savedSponsorString; // Load sponsor string
+            sponsorStringContainer.style.display = 'block'; // Show container
+        } else {
+            sponsorStringInput.value = ''; // Clear input if debug mode is disabled
+            sponsorStringContainer.style.display = 'none'; // Hide input
+        }
     });
 
-    // Save setting when checkbox is clicked
+    // Save settings when checkboxes are clicked
     selfPromotionCheckbox.addEventListener('change', function () {
-        chrome.storage.local.set({ blockSelfPromotion: this.checked }, function () {
-        });
+        chrome.storage.local.set({ blockSelfPromotion: this.checked }, function () { });
+    });
+
+    debugModeCheckbox.addEventListener('change', function () {
+        chrome.storage.local.set({ debugMode: this.checked }, function () { });
+
+        // Show or hide the sponsor string input based on debug mode
+        if (this.checked) {
+            document.getElementById('sponsor-string-container').style.display = 'block'; // Show container
+            // Load the sponsor string if debug mode is enabled
+            chrome.storage.local.get(['sponsorString'], function (result) {
+                const savedSponsorString = result.sponsorString || ''; // Default to empty string if undefined
+                sponsorStringInput.value = savedSponsorString; // Set the value safely
+            });
+        } else {
+            sponsorStringInput.value = ''; // Clear input if debug mode is disabled
+            document.getElementById('sponsor-string-container').style.display = 'none'; // Hide container
+        }
+    });
+
+    // Save sponsor string when it changes
+    sponsorStringInput.addEventListener('change', function () {
+        chrome.storage.local.set({ sponsorString: this.value }, function () { });
     });
 
     showIssueFormButton.addEventListener('click', () => {

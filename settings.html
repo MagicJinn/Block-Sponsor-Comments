@@ -13,6 +13,10 @@
             color: white
         }
 
+        .settings-menu {
+            position: relative;
+        }
+
         .kofi-icon {
             position: absolute;
             right: 10px;
@@ -33,18 +37,33 @@
 </head>
 
 <div class="settings-menu">
-    <h1>Settings</h1>
+    <h1>
+        <img src="icon.png" alt="Icon" style="width: 48px; height: 48px; vertical-align: middle;"> 
+        Settings
+    </h1>
+    <div class="option">
+        <input type="checkbox" id="self-promotion" name="self-promotion" style="vertical-align: middle;">
+        <label for="self-promotion">Block Self Promotion</label>
+    </div>
 
     <div class="option">
-        <label for="self-promotion">Block Self Promotion</label>
-        <input type="checkbox" id="self-promotion" name="self-promotion">
-    </div><br>
+        <input type="checkbox" id="debug-mode" name="debug-mode" style="vertical-align: middle;">
+        <label for="debug-mode">Debug Mode</label>
+    </div>
+
+    <div class="option" id="sponsor-string-container" style="display: block;">
+        <div>Debug mode allows you to set a custom string to match, to test whether your selector is correct. Currently only supports comments, and a reload is required. Work in progress. </div>
+        <label for="sponsor-string">Sponsor String (requires reload):</label>
+        <input type="text" id="sponsor-string" style="width:90%" placeholder="String to test for">
+    </div>
+
+    <br>
 
     <button id="show-issue-form">Submit issue with current watchpage</button>
     <div id="issue-form" style="display: none;">
-        <input type="text" id="current-title" style="width:100%" placeholder="Current video Title">
+        <input type="text" id="current-title" style="width:90%" placeholder="Current video title">
         <br>
-        <input type="text" id="current-url" style="width:100%" placeholder="Current video URL">
+        <input type="text" id="current-url" style="width:90%" placeholder="Current video URL">
         <br>
         <textarea id="extra-notes" placeholder="Additional notes..."></textarea>
         <br>
