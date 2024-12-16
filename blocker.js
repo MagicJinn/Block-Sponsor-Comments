@@ -5,6 +5,8 @@ var blockSelfPromotion = false
 var debugMode = false;
 var sponsorString = '';
 
+const GITHUB_STRINGS_URL = "https://raw.githubusercontent.com/MagicJinn/Block-Sponsor-Comments/refs/heads/main/strings.json"
+
 function EmbeddedURL(str) { // Get an embedded URL
     return chrome.runtime.getURL(str)
 }
@@ -24,10 +26,36 @@ function GetConfigSettings() {
 
 async function LoadJSON() { // Fetch the embedded JSON files
     try {
-        const [stringsData, selectorsData] = await Promise.all([
-            fetch(EmbeddedURL("strings.json")).then(response => response.json()),
+        const [selectorsData] = await Promise.all([ // Get the embedded JSON files
             fetch(EmbeddedURL("selectors.json")).then(response => response.json())
         ]);
+
+        // Fetch the most up to date strings from Github
+        const result = await new Promise((resolve) => { // Check local storage for last fetched time
+            chrome.storage.local.get(['lastFetched', 'fetchedStrings'], resolve);
+        });
+
+        const lastFetchedTime = result.lastFetched ? new Date(result.lastFetched) : null;
+        const nowTime = new Date();
+        const sixHours = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+        let stringsData;
+
+        if (result.fetchedStrings) { // Check if fetchedStrings is available
+            stringsData = result.fetchedStrings; // Use fetchedStrings from storage
+            console.info("Using cached fetchedStrings from storage.");
+        } else if (!lastFetchedTime || (nowTime - lastFetchedTime) > sixHours) { // If lastFetched is null or older than 6 hours, fetch new strings
+            stringsData = await fetch(GITHUB_STRINGS_URL).then(response => response.json());
+            chrome.storage.local.set({ // Store the fetched strings and update last fetched time
+                fetchedStrings: stringsData, // Store the new list
+                lastFetched: nowTime.toISOString() // Store the current date and time
+            });
+            console.info("6 hours since last fetch, fetched new strings from Github.");
+        } else {
+            const secondsAgo = Math.floor((nowTime - lastFetchedTime) / 1000);
+            console.info(`No new strings fetched; using cached data. Last fetch was ${secondsAgo} seconds ago.`);
+            stringsData = await fetch(EmbeddedURL("strings.json")).then(response => response.json());
+        }
 
         const returnStringsData = [
             ...stringsData.Sponsors,

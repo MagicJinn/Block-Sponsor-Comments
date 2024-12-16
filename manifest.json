@@ -1,12 +1,13 @@
 {
     "manifest_version": 2,
     "name": "Block Sponsor Comments",
-    "version": "1.5.7",
+    "version": "1.6.0",
     "description": "Browser extension to remove sponsors from YouTube descriptions and comments.",
     "permissions": [
         "*://*.youtube.com/*",
-        "storage"
-        ],
+        "storage",
+        "*://raw.githubusercontent.com/MagicJinn/Block-Sponsor-Comments/refs/heads/main/strings.json"
+    ],
     "browser_action": {
         "default_popup": "settings.html"
     },
