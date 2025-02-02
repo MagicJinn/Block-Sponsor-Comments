@@ -17,7 +17,7 @@ function Flatten(str) {
 }
 
 function GetConfigSettings() {
-    chrome.storage.local.get(['blockSelfPromotion', 'debugMode', 'sponsorString'], function (result) {
+    chrome.storage.local.get(['blockSelfPromotion', 'debugMode', 'sponsorString'], function(result) {
         blockSelfPromotion = result.blockSelfPromotion || false;
         debugMode = result.debugMode || false;
         sponsorString = result.sponsorString || '';
@@ -37,7 +37,10 @@ async function LoadJSON() { // Fetch the embedded JSON files
 
         const lastFetchedTime = result.lastFetched ? new Date(result.lastFetched) : null;
         const nowTime = new Date();
-        const sixHours = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+        const sixHours = 6 * // 6 hours in milliseconds
+            60 * // minutes
+            60 * // seconds 
+            1000; // miliseconds
 
         let stringsData;
 
@@ -94,7 +97,6 @@ function SearchAndDestroySponsors() {
 
             if (debugMode) { // Do not remove sponsors when in debug mode, for testing
                 if (flattenedText.includes(sponsorString)) {
-
                     if (selector.Type = "Comment") {
                         contentElement.style.color = 'red';
                     } else if (selector.Type === "Description") {
@@ -151,7 +153,10 @@ function savePageInfo() {
     const pageTitle = document.title; // Get the title of the tab
 
     if (pageURL.includes("watch?") && pageURL.includes("youtube")) {
-        chrome.storage.local.set({ pageURL: pageURL, pageTitle: pageTitle });
+        chrome.storage.local.set({
+            pageURL: pageURL,
+            pageTitle: pageTitle
+        });
     }
 }
 
@@ -162,4 +167,7 @@ GetConfigSettings()
 
 // Look for changes in the DOM
 new MutationObserver(SearchAndDestroySponsors)
-    .observe(document.body, { childList: true, subtree: true });
+    .observe(document.body, {
+        childList: true,
+        subtree: true
+    });
