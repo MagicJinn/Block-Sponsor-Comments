@@ -119,6 +119,7 @@ function SearchAndDestroySponsors() {
                                 .join("");
                             contentElement.innerHTML = newText;
                         }
+                        console.log("Detected sponsor: ", str);
                     }
                 }
             }
@@ -166,8 +167,11 @@ window.addEventListener('focus', savePageInfo); // Call SavePageInfo every time 
 GetConfigSettings()
 
 // Look for changes in the DOM
-new MutationObserver(SearchAndDestroySponsors)
-    .observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+// new MutationObserver(SearchAndDestroySponsors)
+//     .observe(document.body, {
+//         childList: true,
+//         subtree: true
+//     });
+// Retired the MutationObserver due to it not triggering consistently
+
+setInterval(SearchAndDestroySponsors, 100); // Call the function every second

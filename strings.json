@@ -33,7 +33,7 @@
         "get a 10% discount",
         "?ref=",
         "activation code at",
-        "No credit card is required.",
+        "No credit card is required",
 
         "app.temu.com",
         "shop like a billionaire",
@@ -87,8 +87,8 @@
         "Legendary He-Man by completing the Champion Pass",
         "Legendary Skeletor by logging into RAID on 7 days",
         "Legendary Sun Wukong via promo code MONKEYKING ⚡️ available by January 7th",
-        "© Plarium Global LTD, 2024. All rights reserved.",
-        "MASTERS OF THE UNIVERSE™ and associated trademarks and trade dress are owned by, and used under license from, Mattel. © 2024 Mattel. All Rights Reserved. Under license to Classic Media.",
+        "© Plarium Global LTD, 2024. All rights reserved",
+        "MASTERS OF THE UNIVERSE™ and associated trademarks and trade dress are owned by, and used under license from, Mattel. © 2024 Mattel. All Rights Reserved. Under license to Classic Media",
 
         "upside.app.link",
         "Download the FREE Upside App",
@@ -105,6 +105,8 @@
 
         "Ground News",
         "ground.news",
+        "Subscribe for 50% off unlimited access through my link",
+        "to take control of the news you consume, compare world-wide perspectives and verify your information",
 
         "Storyteller AI",
         "storyteller.ai",
@@ -143,6 +145,7 @@
 
         "NordVPN",
         "with Nord’s 30-day money-back guarantee!",
+        "It's risk free with Nord's 30 day money-back guarantee!",
         "NordPass",
 
         "hoyo.link",
@@ -200,10 +203,26 @@
 
         "Try Geoguessr FOR FREE",
         "Play my Geoguessr challenge here",
-        
+        "Watcher of Realms",
+        "Join the ultimate battle event and team up with me to get a chance to win amazing prizes!",
+        "WoR",
+
+        "World of Tanks",
+        "tanks.ly",
+        "FREE Tier 5 Tank",
+        "250k credits",
+        "7 days of premium",
+        "3 rental tanks",
+
+        "deleteme",
+        "joindeleteme",
+
+        "lumen.me",
+        "Take the next step to improving your health:",
+        "get 20% off your Lumen.",
+
         "Rocket Money",
         "Urcdkeys.Com",
-        "deleteme",
         "dragoncity",
         "zaxbys.com",
         "Nebula",
@@ -292,7 +311,10 @@
         "trainwell",
         "80000hours.org",
         "moneylion",
-        "mzla.link"
+        "mzla.link",
+        "click.fan",
+        "SheetsResume",
+        "Lambda"
     ],
     "SelfPromotion": [
         "Patreon",
