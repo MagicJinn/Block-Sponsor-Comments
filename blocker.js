@@ -21,6 +21,12 @@ function GetConfigSettings() {
         blockSelfPromotion = result.blockSelfPromotion || false;
         debugMode = result.debugMode || false;
         sponsorString = result.sponsorString || '';
+        LoadJSON().then(data => {
+            if (data) {
+                data.strings.forEach(str => strings.add(Flatten(str)));
+                selectors.push(...data.selectors);
+            }
+        });
     });
 }
 
@@ -143,14 +149,13 @@ function splitKeepDelimiter(input, regex) { // Function to split text while keep
 
     parts.forEach((part, index) => {
         if (index > 0) {
-            const match = input.match(regex)[index - 1];
-            result.push(match);
+            result.push(matches[index - 1]);
         }
         result.push(part);
     });
 
     // Append the last delimiter if it exists
-    const lastMatch = input.match(regex)[input.match(regex).length - 1];
+    const lastMatch = matches[matches.length - 1];
     if (lastMatch) result.push(lastMatch);
 
     return result;
@@ -172,7 +177,7 @@ function savePageInfo() {
 if (document.hasFocus()) savePageInfo(); // Call the function to save page info
 window.addEventListener('focus', savePageInfo); // Call SavePageInfo every time the tab gains focus
 
-GetConfigSettings()
+GetConfigSettings(); // <-- Restore this call!
 
 // Look for changes in the DOM
 // new MutationObserver(SearchAndDestroySponsors)
