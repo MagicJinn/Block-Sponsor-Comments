@@ -117,6 +117,8 @@ function SearchAndDestroySponsors() {
                             break; // Break since the element will be removed anyway
                         } else if (selector.Type == "Description") {
                             const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
+                            if(sentences == null) continue; // splitKeepDelimiter sometimes fails for no reason at all
+
                             let newText = sentences
                                 .filter(sentence => !Flatten(sentence).includes(str)) // Filter for strings that do not contain the sponsor
                                 .join("");
@@ -132,7 +134,10 @@ function SearchAndDestroySponsors() {
     elementsToRemove.forEach(element => element.remove());
 }
 
-function splitKeepDelimiter(input, regex) { // Function to split text while keeping the character"/word at which it is split
+function splitKeepDelimiter(input, regex) { // Function to split text while keeping the character/word at which it is split
+    const matches = input.match(regex);
+    if (!matches) return null;
+
     const parts = input.split(regex);
     const result = [];
 
