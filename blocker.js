@@ -109,13 +109,16 @@ function sponsorFlatMatches(flatText, sponsorFlat, rawFragment) {
     if (sponsorFlat.length === 0) return false;
     if (flatText.includes(sponsorFlat)) return true;
 
-    // Match distinctive brand stems from domain-style sponsor strings (e.g. brilliant.org).
+    // Match brand names from domain-style strings (e.g. brilliant.org → "Brilliant" in prose).
+    // Require capitalized brand spelling so common words (e.g. "ground" in "from the ground up")
+    // do not match sponsors like ground.news.
     const dotIndex = sponsorFlat.indexOf(".");
     if (dotIndex > 0) {
         const stem = sponsorFlat.slice(0, dotIndex);
-        if (stem.length >= 8 && /^[a-z]+$/.test(stem)) {
-            const stemPattern = new RegExp(`\\b${stem}\\b`, "i");
-            if (stemPattern.test(rawFragment)) return true;
+        if (stem.length >= 5 && /^[a-z]+$/.test(stem)) {
+            const brandWord = stem.charAt(0).toUpperCase() + stem.slice(1);
+            const brandPattern = new RegExp(`\\b${brandWord}\\b`);
+            if (brandPattern.test(rawFragment)) return true;
         }
     }
 
