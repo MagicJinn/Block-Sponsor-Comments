@@ -162,7 +162,7 @@ function filterDescriptionSpan(spanHtml, stringsSet) {
         return "";
     }
 
-    const inner = spanMatch[2];
+    const inner = spanMatch[2].replace(/\r\n/g, "\n").replace(/\r/g, "\n");
     const paragraphs = inner.split(/\n\n+/);
     if (paragraphs.length <= 1) {
         return "";
