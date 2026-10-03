@@ -237,23 +237,6 @@ function SearchAndDestroySponsors() {
     elementsToRemove.forEach(element => element.remove());
 }
 
-function splitKeepDelimiter(input, regex) { // Function to split text while keeping the character/word at which it is split
-    const matches = input.match(regex);
-    if (!matches) return null;
-
-    const parts = input.split(regex);
-    const result = [];
-
-    parts.forEach((part, index) => {
-        if (index > 0) {
-            result.push(matches[index - 1]);
-        }
-        result.push(part);
-    });
-
-    return result;
-}
-
 // Collect debug info for issue reporting
 function savePageInfo() {
     const pageURL = window.location.href; // Get the URL of the tab
