@@ -1,0 +1,25 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "[![Button Download Firefox]][Download Firefox]   [![Button Download Chrome]][Download Chrome]   [![Button Download Edge]][Download Edge]",
+  "main": "blocker.js",
+  "scripts": {
+    "test": "node test/description-filter.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagicJinn/Block-Sponsor-Comments.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MagicJinn/Block-Sponsor-Comments/issues"
+  },
+  "homepage": "https://github.com/MagicJinn/Block-Sponsor-Comments#readme",
+  "devDependencies": {
+    "happy-dom": "^20.14.5",
+    "playwright": "^1.63.0",
+    "youtubei.js": "^18.1.0"
+  }
+}

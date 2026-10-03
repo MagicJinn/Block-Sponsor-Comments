@@ -5,6 +5,8 @@ var blockSelfPromotion = false
 var debugMode = false;
 var sponsorString = '';
 
+var isTestMode = typeof globalThis !== "undefined" && globalThis.__BSC_TEST_MODE__;
+
 const GITHUB_STRINGS_URL = "https://raw.githubusercontent.com/MagicJinn/Block-Sponsor-Comments/refs/heads/main/strings.json"
 
 function EmbeddedURL(str) { // Get an embedded URL
@@ -87,13 +89,110 @@ async function LoadJSON() { // Fetch the embedded JSON files
     }
 }
 
-LoadJSON().then(data => {
-    if (data) {
-        data.strings.forEach(str => strings.add(Flatten(str)));
-        selectors.push(...data.selectors);
-    }
-});
+function loadSponsorData(stringList, selectorList) {
+    strings.clear();
+    selectors.length = 0;
+    selectorList.forEach((entry) => selectors.push(entry));
+    stringList.forEach((str) => strings.add(Flatten(str)));
+}
 
+if (!isTestMode) {
+    LoadJSON().then(data => {
+        if (data) {
+            data.strings.forEach(str => strings.add(Flatten(str)));
+            selectors.push(...data.selectors);
+        }
+    });
+}
+
+function sponsorFlatMatches(flatText, sponsorFlat, rawFragment) {
+    if (sponsorFlat.length === 0) return false;
+    if (flatText.includes(sponsorFlat)) return true;
+
+    // Match brand names from domain-style strings (e.g. brilliant.org → "Brilliant" in prose).
+    // Require capitalized brand spelling so common words (e.g. "ground" in "from the ground up")
+    // do not match sponsors like ground.news.
+    const dotIndex = sponsorFlat.indexOf(".");
+    if (dotIndex > 0) {
+        const stem = sponsorFlat.slice(0, dotIndex);
+        if (stem.length >= 5 && /^[a-z]+$/.test(stem)) {
+            const brandWord = stem.charAt(0).toUpperCase() + stem.slice(1);
+            const brandPattern = new RegExp(`\\b${brandWord}\\b`);
+            if (brandPattern.test(rawFragment)) return true;
+        }
+    }
+
+    return false;
+}
+
+function descriptionFragmentHasSponsor(fragment, stringsSet) {
+    const flat = Flatten(fragment);
+    for (const str of stringsSet) {
+        if (sponsorFlatMatches(flat, str, fragment)) return true;
+    }
+    return false;
+}
+
+function splitDescriptionSegments(html) {
+    const segments = [];
+    const spanPattern = /<span\b[^>]*>[\s\S]*?<\/span>/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = spanPattern.exec(html)) !== null) {
+        if (match.index > lastIndex) {
+            segments.push(html.slice(lastIndex, match.index));
+        }
+        segments.push(match[0]);
+        lastIndex = spanPattern.lastIndex;
+    }
+
+    if (lastIndex < html.length) {
+        segments.push(html.slice(lastIndex));
+    }
+
+    return segments.length > 0 ? segments : [html];
+}
+
+function filterDescriptionSpan(spanHtml, stringsSet) {
+    if (!descriptionFragmentHasSponsor(spanHtml, stringsSet)) return spanHtml;
+
+    const spanMatch = spanHtml.match(/^(<span\b[^>]*>)([\s\S]*)<\/span>$/);
+    if (!spanMatch) {
+        return "";
+    }
+
+    const inner = spanMatch[2].replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const paragraphs = inner.split(/\n\n+/);
+    if (paragraphs.length <= 1) {
+        return "";
+    }
+
+    const kept = paragraphs.filter((paragraph) => !descriptionFragmentHasSponsor(paragraph, stringsSet));
+    if (kept.length === 0) {
+        return "";
+    }
+    if (kept.length === paragraphs.length) {
+        return spanHtml;
+    }
+
+    return spanMatch[1] + kept.join("\n\n") + "</span>";
+}
+
+function filterDescriptionHtml(html, stringsSet) {
+    return splitDescriptionSegments(html)
+        .map((segment) => {
+            if (/^<span\b/i.test(segment)) {
+                return filterDescriptionSpan(segment, stringsSet);
+            }
+            if (descriptionFragmentHasSponsor(segment, stringsSet)) {
+                return "";
+            }
+            return segment;
+        })
+        .filter((segment) => segment !== "")
+        .join("");
+}
 
 function SearchAndDestroySponsors() {
     let elementsToRemove = [];
@@ -116,21 +215,22 @@ function SearchAndDestroySponsors() {
                     }
                 }
             } else {
-                for (const str of strings) { // Loop through each string
-                    if (flattenedText.includes(str)) { // If a match is found
-                        if (selector.Type == "Comment") {
-                            elementsToRemove.push(element); // Simply remove element
-                            break; // Break since the element will be removed anyway
-                        } else if (selector.Type == "Description") {
-                            const sentences = splitKeepDelimiter(foundText, /<\/span>/g);
-                            if(sentences == null) continue; // splitKeepDelimiter sometimes fails for no reason at all
-
-                            let newText = sentences
-                                .filter(sentence => !Flatten(sentence).includes(str)) // Filter for strings that do not contain the sponsor
-                                .join("");
-                            contentElement.innerHTML = newText;
+                if (selector.Type == "Comment") {
+                    for (const str of strings) {
+                        if (flattenedText.includes(str)) {
+                            elementsToRemove.push(element);
+                            console.log("Detected sponsor: ", str);
+                            break;
                         }
-                        console.log("Detected sponsor: ", str);
+                    }
+                } else if (selector.Type == "Description") {
+                    if (!descriptionFragmentHasSponsor(flattenedText, strings)) {
+                        return;
+                    }
+                    const newText = filterDescriptionHtml(foundText, strings);
+                    if (newText !== foundText) {
+                        contentElement.innerHTML = newText;
+                        console.log("Filtered sponsor text from description");
                     }
                 }
             }
@@ -138,27 +238,6 @@ function SearchAndDestroySponsors() {
     });
 
     elementsToRemove.forEach(element => element.remove());
-}
-
-function splitKeepDelimiter(input, regex) { // Function to split text while keeping the character/word at which it is split
-    const matches = input.match(regex);
-    if (!matches) return null;
-
-    const parts = input.split(regex);
-    const result = [];
-
-    parts.forEach((part, index) => {
-        if (index > 0) {
-            result.push(matches[index - 1]);
-        }
-        result.push(part);
-    });
-
-    // Append the last delimiter if it exists
-    const lastMatch = matches[matches.length - 1];
-    if (lastMatch) result.push(lastMatch);
-
-    return result;
 }
 
 // Collect debug info for issue reporting
@@ -174,17 +253,25 @@ function savePageInfo() {
     }
 }
 
-if (document.hasFocus()) savePageInfo(); // Call the function to save page info
-window.addEventListener('focus', savePageInfo); // Call SavePageInfo every time the tab gains focus
+if (!isTestMode) {
+    if (document.hasFocus()) savePageInfo(); // Call the function to save page info
+    window.addEventListener('focus', savePageInfo); // Call SavePageInfo every time the tab gains focus
 
-GetConfigSettings(); // <-- Restore this call!
+    GetConfigSettings(); // <-- Restore this call!
 
-// Look for changes in the DOM
-// new MutationObserver(SearchAndDestroySponsors)
-//     .observe(document.body, {
-//         childList: true,
-//         subtree: true
-//     });
-// Retired the MutationObserver due to it not triggering consistently
+    // Look for changes in the DOM
+    // new MutationObserver(SearchAndDestroySponsors)
+    //     .observe(document.body, {
+    //         childList: true,
+    //         subtree: true
+    //     });
+    // Retired the MutationObserver due to it not triggering consistently
 
-setInterval(SearchAndDestroySponsors, 100); // Call the function every 100 ms
+    setInterval(SearchAndDestroySponsors, 100); // Call the function every 100 ms
+} else {
+    globalThis.__BSC_BLOCKER__ = {
+        loadSponsorData,
+        SearchAndDestroySponsors,
+        filterDescriptionHtml,
+    };
+}
